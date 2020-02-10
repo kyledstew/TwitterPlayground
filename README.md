@@ -17,13 +17,13 @@ Right now there is no check to see if it has already gone through this flow when
 This means that if a server for whatever reason fails to authenticate, or continues to throw a 401, the app will recursively keep making these network requests.
 This is not shippable, it needs to be resolved.
 
-1. UI
+2. UI
 The UI for this app was done while keeping on eye on my kids in the bath, so naturally there is room for improvement.
 Fortunately this app was never intended to showcase my SwiftUI skills so I let that slide.
 
-2. Error Handling
+3. Error Handling
 Currently if there is an error returned from any of the requests it is not displayed to the user.
 On the Trends screen if the user does not give consent to share location data it will not prompt again.
 
-3. Unit Tests
+4. Unit Tests
 Again, wasn't the priority but would be good to have.
