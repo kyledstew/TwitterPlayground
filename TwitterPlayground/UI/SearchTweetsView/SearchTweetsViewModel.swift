@@ -21,6 +21,7 @@ extension SearchTweetsViewModel {
     enum Event {
         case searchSelected
         case resultsLoaded([Twitter.Tweet])
+        case error(Error)
     }
 
     class State: ObservableObject {
@@ -38,12 +39,18 @@ extension SearchTweetsViewModel: ViewModel {
             guard !state.searchKeyword.isEmpty else { break }
             state.results.removeAll()
             state.loadingResults = true
-            Actions.searchTweets(keyword: state.searchKeyword,
-                                 completion: handleSearchResult)
+            DispatchQueue.global(qos: .userInitiated).async {
+                Actions.searchTweets(keyword: self.state.searchKeyword,
+                                     completion: self.handleSearchResult)
+            }
 
         case let .resultsLoaded(tweets):
             state.loadingResults = false
             state.results.append(contentsOf: tweets)
+
+        case let .error(error):
+            state.loadingResults = false
+            print(error)
         }
     }
 
@@ -55,7 +62,9 @@ extension SearchTweetsViewModel: ViewModel {
             }
 
         case let .failure(error):
-            print(error)
+            DispatchQueue.main.async {
+                self.notify(event: .error(error))
+            }
         }
     }
 }

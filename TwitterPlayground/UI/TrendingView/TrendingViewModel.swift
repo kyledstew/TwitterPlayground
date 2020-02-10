@@ -21,6 +21,7 @@ extension TrendingViewModel {
     enum Event {
         case loadResults
         case resultsLoaded([Twitter.Trend])
+        case error(Error)
     }
 
     class State: ObservableObject {
@@ -35,11 +36,17 @@ extension TrendingViewModel: ViewModel {
         switch event {
         case .loadResults:
             state.loadingResults = true
-            Actions.getTrendingNearMe(completion: handleLoadResult)
+            DispatchQueue.global(qos: .userInitiated).async {
+                Actions.getTrendingNearMe(completion: self.handleLoadResult)
+            }
 
         case let .resultsLoaded(trends):
             state.loadingResults = false
             state.results = trends
+
+        case let .error(error):
+            state.loadingResults = false
+            print(error)
         }
     }
 
@@ -51,7 +58,9 @@ extension TrendingViewModel: ViewModel {
             }
 
         case let .failure(error):
-            print(error)
+            DispatchQueue.main.async {
+                self.notify(event: .error(error))
+            }
         }
     }
 }
