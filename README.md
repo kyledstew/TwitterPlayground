@@ -11,6 +11,12 @@ Technologies Used in this app:
 
 Things to Improve:
 
+1. Networking
+With the Twitter `Interceptor` object, it re-authenticates after getting a 401, then retries the request. 
+Right now there is no check to see if it has already gone through this flow when making a request.
+This means that if a server for whatever reason fails to authenticate, or continues to throw a 401, the app will recursively keep making these network requests.
+This is not shippable, it needs to be resolved.
+
 1. UI
 The UI for this app was done while keeping on eye on my kids in the bath, so naturally there is room for improvement.
 Fortunately this app was never intended to showcase my SwiftUI skills so I let that slide.
